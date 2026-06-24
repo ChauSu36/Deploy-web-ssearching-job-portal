@@ -1,0 +1,20 @@
+1/ Thành phần backend
+
+- Tên thư mục source: jobportal 
+- Công nghệ sử dụng: Java (Framework Spring Boot phiên bản 2.7.14)
+- File chạy chính: File JobPortalApplication.java (nằm tại đường dẫn src/main/java/stu/recruitmentweb/jobportal/JobPortalApplication.java)
+- Port: 8080
+- App cần gì để chay:
+	+) Môi trường: java 11
+	+) Dùng công +) Kết nối tới cơ sở dữ liệu Mysql
+2/ Thành phần frontend
+
+- Tên thư mục: react-social 
+- Công nghệ sử dụng chính: NodeJS (Framework thư viện Reactjs)
+- File chạy chính: src/index.js
+- Port: 3000
+- App cần gì để chay:
+	+) Môi trường: Nodejs 
+	+) Chạy lệnh sudo apt install npm để cài đặt các thư viện phụ thuộc
+	+) Chạy chương trình: npm start
+
