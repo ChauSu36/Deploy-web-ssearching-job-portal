@@ -15,13 +15,18 @@ class ProfileRecruiter extends React.Component {
             skypeAccount: "",
             workplace: "",
             companyAddress: "",
+            companyPhone: "",
             companyName: "",
             description: null,
             image: "",
             files: "",
             personalSize: null,
-            website: ""
+            website: "",
+            currentUser: {
+                name: "",
+                email: ""
 
+            }
 
 
         }
@@ -83,7 +88,6 @@ class ProfileRecruiter extends React.Component {
         if (!this.validatePhone(this.state.recruiterPhone)) {
             Alert.success("Số điện thoại không hợp lệ")
         } else {
-
             const formData = new FormData();
             formData.append('recruiterAddress', this.state.recruiterAddress);
             formData.append('recruiterPhone', this.state.recruiterPhone);
@@ -95,17 +99,18 @@ class ProfileRecruiter extends React.Component {
             formData.append('website', this.state.website);
             formData.append('personalSize', this.state.personalSize);
 
-            for (const key of Object.keys(this.state.files)) {
-                formData.append('image', this.state.files[key]);
+            if (this.state.files && Object.keys(this.state.files).length > 0) {
+                for (const key of Object.keys(this.state.files)) {
+                    formData.append('image', this.state.files[key]);
+                }
             }
-
 
             FileService.editInfoRecruiter(formData)
                 .then(response => {
                     Alert.success("Cập nhật thông tin thành công!!");
                     this.loadUser();
                 }).catch(error => {
-
+                    Alert.error("Có lỗi xảy ra khi cập nhật thông tin!");
                 });
         }
     }
@@ -117,7 +122,7 @@ class ProfileRecruiter extends React.Component {
     }
 
     render() {
-
+        ``
         console.log("PROFILE", this.state)
         return (
 
@@ -142,8 +147,8 @@ class ProfileRecruiter extends React.Component {
                                 <div className="profile-avatar">
                                 </div>
                                 <div className="profile-name">
-                                    <h2>{this.props.currentUser.name === null ? "" : this.props.currentUser.name}</h2>
-                                    <p className="profile-email">{this.props.currentUser.email === null ? "" : this.props.currentUser.email}</p>
+                                    <h2>{this.props.currentUser.name ? this.props.currentUser.name : ""}</h2>
+                                    <p className="profile-email">{this.props.currentUser.email ? this.props.currentUser.email : ""}</p>
                                 </div>
                             </div>
 
@@ -156,8 +161,16 @@ class ProfileRecruiter extends React.Component {
                                                 <input type="email" className="form-control" name='email' value={this.props.currentUser.email} id="inputEmail4" placeholder="Email" disabled />
                                             </div>
                                             <div class="mb-3 col-md-6">
-                                                <label class="form-label" >Số điện thoại</label>
-                                                <input type="text" className="form-control" name='phone' value={this.state.phone} onChange={this.handleInputChange} id="inputPassword4" placeholder="Số điện thoại" />
+                                                <label class="form-label">Số điện thoại</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    name='recruiterPhone' 
+                                                    value={this.state.recruiterPhone} 
+                                                    onChange={this.handleInputChange} 
+                                                    id="inputPhone" 
+                                                    placeholder="Số điện thoại" 
+                                                />
                                             </div>
                                         </div>
                                         <div class="mb-3">
@@ -195,9 +208,14 @@ class ProfileRecruiter extends React.Component {
 
                                             <label class="form-label">Tải Logo</label>
                                             <br /><br />
-                                            <img
-                                                src={this.state.image && this.state.image.indexOf("http") !== -1 ? this.state.image : `http://localhost:8080/image/` + this.state.image.replace('photographer/files/', '')}
-                                                alt="Logo" style={{ height: "100px", width: "100px" , marginBottom: "5px"}} />
+                                            {/* <img
+                                                src={this.state.imageUrl
+                                                    ?
+                                                    this.state.imageUrl
+                                                    :
+                                                    `http://localhost:8080/image/` + this.state.imageUrl.replace(`photographer/files/`, '')
+                                                }
+                                                alt="Logo" style={{ height: "100px", width: "100px", marginBottom: "5px" }} /> */}
                                             <br />
                                             <input class="form-control" type="file" onChange={this.onFileChange} />
                                         </div>

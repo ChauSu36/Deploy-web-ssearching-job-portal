@@ -16,7 +16,7 @@ class Nav extends React.Component {
               </a>
 
               <a className="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                <img src="../assets/img/logo/logo.png" className="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span className="text-dark">Master</span>
+                <img src="../assets/img/logo/logo-full.png" className="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span className="text-dark">Master</span>
               </a>
               <div className="dropdown-menu dropdown-menu-end">
                 <div className="dropdown-divider"></div>

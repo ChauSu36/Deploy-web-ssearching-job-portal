@@ -155,7 +155,7 @@ class JobDetails extends React.Component {
                                     <div class="small-section-tittle">
                                         <h4>Thông tin công ty</h4>
                                     </div>
-                                    <span>Hành trình đồng hàng Photographer</span>
+                                    {/* <span>Hành trình đồng hàng Photographer</span> */}
                                     <p>{this.state.description}</p>
                                     <img
                                         src={this.state.image === null ? ""  : this.state.image.indexOf("http") !== -1 ? this.state.image : `http://localhost:8080/image/` + this.state.image.replace('photographer/files/', '')}

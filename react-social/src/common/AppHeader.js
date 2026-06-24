@@ -16,7 +16,7 @@ const AppHeader = ({ authenticated, onLogout }) => {
                             <div className="col-lg-3 col-md-2">
                                 <div className="logo">
                                     <Link to="/">
-                                        <img src="../assets/img/logo/logo.png" alt="" style={{ width: "50%", borderRadius: "15px" }} />
+                                        <img src="../assets/img/logo/logo-full.png" alt="" style={{ width: "50%", borderRadius: "15px" }} />
                                     </Link>
                                 </div>
                             </div>

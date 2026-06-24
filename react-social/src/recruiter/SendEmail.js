@@ -87,7 +87,7 @@ class SendMail extends React.Component {
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Lời nhắn</label>
-                                        <textarea class="form-control" placeholder="Mô tả" rows="1" style={{height: "65px"}} name='description'
+                                        <textarea class="form-control" placeholder="Mô tả" rows="1" style={{height: "365px"}} name='description'
                                         value={this.state.description} onChange={this.handleInputChange}></textarea>
                                     </div>
 

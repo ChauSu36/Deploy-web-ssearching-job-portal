@@ -198,6 +198,7 @@ public class JobseekerServiceImpl extends BaseService implements JobseekerServic
 
         // Replace placeholders in the HTML template with dynamic values
         htmlTemplate = htmlTemplate.replace("NAM NGHIEM", contactRequest.getName());
+        // htmlTemplate = htmlTemplate.replace(target:"VI TRI", contactRequest.getSubject());
         htmlTemplate = htmlTemplate.replace("DESCRIPTION", contactRequest.getDescription());
 
         // Set the email's content to be the HTML template

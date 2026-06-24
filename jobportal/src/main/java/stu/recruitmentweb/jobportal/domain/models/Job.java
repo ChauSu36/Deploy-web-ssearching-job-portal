@@ -36,10 +36,13 @@ public class Job extends DateAudit {
     private BigDecimal minSalary;
     @Column(name = "max_salary")
     private BigDecimal maxSalary;
+    @Lob
     private String description;
 
     @Column(name = "require_job")
+    @Lob
     private String requireJob;
+    @Lob
     private String welfare;
     private String language;
 

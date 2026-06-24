@@ -42,7 +42,7 @@ public class RecruitersController {
                                                 @RequestParam String companyAddress,
                                                 @RequestParam String companyName,
                                                 @RequestParam String description,
-                                                @RequestParam MultipartFile image,
+                                                @RequestParam(value = "image", required = false) MultipartFile image,
                                                 @RequestParam Integer personalSize,
                                                 @RequestParam String website){
         return ResponseEntity.ok(recruitersService.editProfileOfRecruiter(recruiterAddress,recruiterPhone,skypeAccount,workplace,

@@ -37,6 +37,8 @@ public class AdminServiceImpl extends BaseService implements AdminService {
     private final AdvertisementRepositoryCustom advertisementRepositoryCustom;
     private final CategoryRepository categoryRepository;
     private final JobRepositoryCustom jobRepositoryCustom;
+    
+    
 
     @Override
     public Page<JobDetailResponse> getPageJobOfRecruiters(Integer pageNo, Integer pageSize) {

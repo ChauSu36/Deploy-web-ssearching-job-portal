@@ -45,7 +45,8 @@ class JobFeatures extends React.Component {
 
                             <div class="job-items">
                                 <div class="company-img">
-                                    <Link to="/job-detail"><img src="assets/img/icon/job-list1.png" alt="" /></Link>
+                                    
+                                    {/* <Link to="/job-detail"><img src="assets/img/icon/job-list1.png" alt="" /></Link> */}
                                 </div>
                                 <div class="job-tittle job-tittle2">
 
@@ -60,7 +61,7 @@ class JobFeatures extends React.Component {
                             </div>
                             <div class="items-link items-link2 f-right">
                                 <Link to={`/job-detail/${job.id}`}>{job.level}</Link>
-                                <span>{"Hạn: " + new Date(job.deadline).getDay() + " - " + new Date(job.deadline).getMonth() + " - " + new Date(job.deadline).getFullYear()}</span>
+                                <span>{"Hạn: " + new Date(job.deadline).getDate() + " - " + (new Date(job.deadline).getMonth() + 1) + " - " + new Date(job.deadline).getFullYear()}</span>
                             </div>
                         </div>
                         )

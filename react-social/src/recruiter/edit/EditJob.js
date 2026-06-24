@@ -51,7 +51,7 @@ class EditJob extends React.Component {
                     minSalary: response.minSalary,
                     maxSalary: response.maxSalary,
                     description: response.description,
-                    requireJob: response.description,
+                    requireJob: response.requireJob,
                     welfare: response.welfare,
                     language: response.language,
                     deadline: response.deadline
@@ -137,8 +137,8 @@ class EditJob extends React.Component {
                       </div>
                       
                       <div class="mb-3 col-md-6">
-                        <label class="form-label" for="inputPassword4">Mô tả</label>
-                        <input type="text" class="form-control" id="inputPassword4" name='description' value={this.state.description} onChange={this.handleInputChange} />
+                        <label class="form-label" for="inputEmail4">Mô tả</label>
+                        <input type="text" class="form-control" id="inputEmail4" name='description' value={this.state.description} onChange={this.handleInputChange} />
                       </div>
                     </div>
                     <div class="row">

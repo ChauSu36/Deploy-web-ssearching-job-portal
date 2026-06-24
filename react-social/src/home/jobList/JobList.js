@@ -177,7 +177,7 @@ function JobList() {
                                 <br></br>
                                 <div class="single-listing">
                                     <div class="small-section-tittle2">
-                                        <h4>Lương nhỏ nhấp</h4>
+                                        <h4>Lương nhỏ nhất</h4>
                                     </div>
                                     <div class="select-job-items2">
                                         <input type="text" class="js-input-from" name='minSalary' value={minSalary} onChange={handleInputChange} readonly />
@@ -226,7 +226,7 @@ function JobList() {
 
                                                     <div class="job-items">
                                                         <div class="company-img">
-                                                            <Link to="/job-detail"><img src="assets/img/icon/job-list1.png" alt="" /></Link>
+                                                            {/* <Link to="/job-detail"><img src="assets/img/icon/job-list1.png" alt="" /></Link> */}
                                                         </div>
                                                         <div class="job-tittle job-tittle2">
 

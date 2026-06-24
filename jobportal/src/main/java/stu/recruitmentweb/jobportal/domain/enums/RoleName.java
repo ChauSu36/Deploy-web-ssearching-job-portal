@@ -1,7 +1,7 @@
 package stu.recruitmentweb.jobportal.domain.enums;
 
 public enum RoleName {
-    ROLE_JOBSEEKER(" ROLE_JOBSEEKER"),
+    ROLE_JOBSEEKER("ROLE_JOBSEEKER"),
     ROLE_ADMIN("ROLE_ADMIN"),
     ROLE_RECRUITER("ROLE_RECRUITER");
 

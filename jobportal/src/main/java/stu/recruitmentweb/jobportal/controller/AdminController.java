@@ -18,6 +18,7 @@ import stu.recruitmentweb.jobportal.service.AdminService;
 public class AdminController {
 
     private final AdminService adminService;
+    
 
     @GetMapping("/job")
     private ResponseEntity<Page<JobDetailResponse>> getAllJob(@RequestParam Integer pageNo,
