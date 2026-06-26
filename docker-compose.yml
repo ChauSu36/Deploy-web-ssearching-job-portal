@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  # 1.Database service
+  jobportal-db:
+    container_name: mysqldb
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: "timviec"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    # 2. Backend service
+  jobportal-backend:
+    container_name: backend-container
+    build:
+      context: ./jobportal
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - jobportal-db
+    restart: always
+    environment: 
+      SPRING_DATASOURCE_URL: jdbc:mysql://jobportal-db:3306/timviec?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    # 3. Frontend service
+  jobportal-frontend:
+    container_name: frontend-container
+    build:
+      context: ./react-social
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    restart: always
+    depends_on:
+      - jobportal-backend
+volumes:
+  mysql_data:
+
