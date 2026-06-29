@@ -6,7 +6,9 @@
 - Port: 8080
 - App cần gì để chay:
 	+) Môi trường: java 11
-	+) Dùng công +) Kết nối tới cơ sở dữ liệu Mysql
+	+) Kết nối tới cơ sở dữ liệu Mysql
+
+
 2/ Thành phần frontend
 
 - Tên thư mục: react-social 
