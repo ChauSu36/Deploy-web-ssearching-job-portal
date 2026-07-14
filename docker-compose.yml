@@ -10,8 +10,8 @@ services:
       MYSQL_DATABASE: "timviec"
     volumes:
       - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    expose:
+      - "3306"
     # 2. Backend service
   jobportal-backend:
     container_name: backend-container
