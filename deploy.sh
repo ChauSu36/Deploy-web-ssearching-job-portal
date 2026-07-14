@@ -14,7 +14,7 @@ echo "Thời gian deploy: $(date)"
 echo "===================================================="
 echo "2. DI CHUYEB VÀO THƯ MUC DU ÁN"
 echo "===================================================="
-cd ~/chausu-compose-web || { echo "ERORR, KHONG TIM THAY THU MUC; exit 1; }
+cd ~/chausu-compose-web || { echo "ERORR, KHONG TIM THAY THU MUC"; exit 1; }
 
 
 echo "===================================================="
