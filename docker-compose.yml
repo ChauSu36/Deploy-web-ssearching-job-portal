@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  # 1.Database service
+  # 1. Database service
   jobportal-db:
     container_name: mysqldb
     image: mysql:8.0
@@ -12,7 +12,10 @@ services:
       - mysql_data:/var/lib/mysql
     expose:
       - "3306"
-    # 2. Backend service
+    networks:
+      - jobportal-network
+
+  # 2. Backend service
   jobportal-backend:
     container_name: backend-container
     build:
@@ -23,7 +26,10 @@ services:
     restart: always
     environment: 
       SPRING_DATASOURCE_URL: jdbc:mysql://jobportal-db:3306/timviec?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-    # 3. Frontend service
+    networks:
+      - jobportal-network
+
+  # 3. Frontend service
   jobportal-frontend:
     container_name: frontend-container
     build:
@@ -32,17 +38,28 @@ services:
     restart: always
     depends_on:
       - jobportal-backend
-     # 4. NGINX service
+    networks:
+      - jobportal-network
+
+  # 4. NGINX service
   nginx:
     container_name: nginx-container
     image: nginx:latest
     ports:
-      - "80:80" 
+      - "80:80"
+      - "443:443" 
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro 
+      - ./nginx/certs:/etc/nginx/certs:ro 
     depends_on:
       - jobportal-frontend
       - jobportal-backend
+    networks:
+      - jobportal-network
+
 volumes:
   mysql_data:
 
+networks:
+  jobportal-network:
+    driver: bridge
