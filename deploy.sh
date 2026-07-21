@@ -15,7 +15,7 @@ echo ""
 echo "===================================================="
 echo "2. DI CHUYEN VÀO THƯ MUC DU ÁN"
 echo "===================================================="
-cd ~/chausu-compose-web/Deploy-web-ssearching-job-portal || { echo "ERROR, KHONG TIM THAY THU MUC"; exit 1; }
+cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal || { echo "ERROR, KHONG TIM THAY THU MUC"; exit 1; }
 echo ""
 
 echo "===================================================="
@@ -25,24 +25,24 @@ echo "===================================================="
 git pull origin main
 
 # Tiến hành build lại các service
-sudo docker-compose -f ~/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml build
+sudo docker-compose -f /root/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml build
 
 echo "===================================================="
 echo "4. KHOI ĐONG LAI STACK BANG DOCKER COMPOSE"
 echo "===================================================="
-sudo docker-compose -f ~/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml down
-sudo docker-compose -f ~/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml up -d
+sudo docker-compose -f /root/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml down
+sudo docker-compose -f /root/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml up -d
 
 echo "===================================================="
 echo "5. HIỂN THỊ TRẠNG THÁI CONTAINER SAU DEPLOY"
 echo "===================================================="
-sudo docker-compose -f ~/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml ps
+sudo docker-compose -f /root/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml ps
 
 echo "===================================================="
 echo "6. IN 40 DÒNG LOG GẦN NHẤT CỦA HỆ THỐNG"
 echo "===================================================="
 # In log của cụm dịch vụ để kiểm tra lỗi khởi động
-sudo docker-compose -f ~/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml logs --tail=40
+sudo docker-compose -f /root/chausu-compose-web/Deploy-web-ssearching-job-portal/docker-compose.yml logs --tail=40
 echo "===================================================="
 echo " QUY TRÌNH DEPLOY HOÀN TẤT!"
 echo "===================================================="
