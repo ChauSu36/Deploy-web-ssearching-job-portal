@@ -2,6 +2,7 @@
 
 # SCRIPT DEPLOY HỆ THỐNG CƠ BẢN
 # Dự án: Job Portal Stack
+set -e
 
 echo "===================================================="
 echo "1. HIEN THI THÔNG TIN HE THONG"
