@@ -15,7 +15,7 @@ echo ""
 echo "===================================================="
 echo "2. DI CHUYEN VÀO THƯ MUC DU ÁN"
 echo "===================================================="
-cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal || { echo "ERROR, KHONG TIM THAY THU MUC"; exit 1; }
+cd ~/chausu-compose-web/Deploy-web-ssearching-job-portal || { echo "ERROR, KHONG TIM THAY THU MUC"; exit 1; }
 echo ""
 
 echo "===================================================="
