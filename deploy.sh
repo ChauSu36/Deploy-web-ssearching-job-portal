@@ -3,7 +3,7 @@
 # SCRIPT DEPLOY HỆ THỐNG CƠ BẢN
 # Dự án: Job Portal Stack
 set -e
-
+# Theo dõi lỗi trong quá trình thực hiện script, nếu có lỗi sẽ dừng lại và in ra thông báo lỗi
 echo "===================================================="
 echo "1. HIEN THI THÔNG TIN HE THONG"
 echo "===================================================="
