@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 24700
           script: |
-            cd ~/chausu-compose-web/Deploy-web-ssearching-job-portal
+            cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
             ./deploy.sh
       
       
