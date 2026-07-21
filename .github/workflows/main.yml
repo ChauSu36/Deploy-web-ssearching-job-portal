@@ -19,6 +19,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 24700
           script: |
             cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
             ./deploy.sh
