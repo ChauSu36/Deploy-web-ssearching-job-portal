@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: SSH and run deploy script
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -22,6 +22,26 @@ jobs:
           port: 24700
           script: |
             cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
-            ./deploy.sh
+            echo "Pull latest source..."
+            git pull origin main
+
+            echo "Build and restart containers..."
+            docker compose down
+            docker compose up -d --build
+
+            echo "Check containers..."
+            docker compose ps
+
+            echo "Check logs..."
+            docker compose logs --tail=50
+
+            echo "Verify website..."
+            curl -I https://web.chausu.name.vn
+
+            echo "Verify API..."
+            curl -k https://api.chausu.name.vn
+
+            echo "Deployment completed."
+            
       
       
