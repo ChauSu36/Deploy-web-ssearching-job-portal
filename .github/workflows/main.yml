@@ -4,6 +4,9 @@ on:
   push:
     branches: 
       - main
+  pull_request: 
+    branches:
+      - main
 
 jobs:
   # ==========================================
@@ -28,7 +31,7 @@ jobs:
         with:
           context: ./jobportal
           file: ./jobportal/Dockerfile
-          push: true
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:latest
 
       # 2/ Frontend Image
@@ -37,7 +40,7 @@ jobs:
         with:
           context: ./react-social
           file: ./react-social/Dockerfile
-          push: true
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:latest
 
   # ==========================================
@@ -46,6 +49,7 @@ jobs:
   Deploy-on-server:
     runs-on: ubuntu-latest
     needs: Build-and-Push # Only deploy when stage 1 is successfull
+    if: github.event_name == 'push' # Only deploy when code is merged or in the main branch
 
     steps:
       - name: SSH and run deploy script
