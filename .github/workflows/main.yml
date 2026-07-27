@@ -6,13 +6,48 @@ on:
       - main
 
 jobs:
-  Deploy-for-chausu:
+  # ==========================================
+  # STAGE 1: CI - BUILD & PUSH DOCKER IMAGES
+  # ==========================================
+  Build-and-Push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout-code-for-ChauSu
+      - name: Clone repository
         uses: actions/checkout@v4
 
+      - name: Login Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      # 1/ Backend Image
+      - name: Build And Push Backend Image (Java Spring Boot)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./jobportal
+          file: ./jobportal/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:latest
+
+      # 2/ Frontend Image
+      - name: Build And Push Frontend Image (Reactjs)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./react-social
+          file: ./react-social/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:latest
+
+  # ==========================================
+  # STAGE 2: CD - DEPLOY TO SERVER
+  # ==========================================
+  Deploy-on-server:
+    runs-on: ubuntu:latest
+    needs: Build-and-Push # Only deploy when stage 1 is successfull
+
+    steps:
       - name: SSH and run deploy script
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -22,24 +57,17 @@ jobs:
           port: 24700
           script: |
             cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
-            echo "Pull latest source..."
-            git pull origin main
+            echo "Pulling the latest images from Docker Hub....."
+            docker compose pull
 
-            echo "Build and restart containers..."
-            docker compose down
-            docker compose up -d --build
+            echo "Restarting containers..."
+            docker compose up -d
+
+            echo "Cleaning unused images..."
+            docker image prune -f
 
             echo "Check containers..."
             docker compose ps
-
-            echo "Check logs..."
-            docker compose logs --tail=50
-
-            echo "Verify website..."
-            curl -I https://web.chausu.name.vn
-
-            echo "Verify API..."
-            curl -k https://api.chausu.name.vn
 
             echo "Deployment completed."
             
