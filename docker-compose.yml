@@ -18,6 +18,7 @@ services:
   # 2. Backend service
   jobportal-backend:
     container_name: backend-container
+    image: chausu/jobportal-backend:latest
     build:
       context: ./jobportal
       dockerfile: Dockerfile
@@ -32,6 +33,7 @@ services:
   # 3. Frontend service
   jobportal-frontend:
     container_name: frontend-container
+    image: chausu/jobportal-frontend:latest
     build:
       context: ./react-social
       dockerfile: Dockerfile
