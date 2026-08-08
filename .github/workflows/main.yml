@@ -32,7 +32,7 @@ jobs:
           context: ./jobportal
           file: ./jobportal/Dockerfile
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:${{github.sha}}
 
       # 2/ Frontend Image
       - name: Build And Push Frontend Image (Reactjs)
@@ -41,7 +41,7 @@ jobs:
           context: ./react-social
           file: ./react-social/Dockerfile
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:${{github.sha}}
 
   # ==========================================
   # STAGE 2: CD - DEPLOY TO SERVER
@@ -61,6 +61,9 @@ jobs:
           port: 24700
           script: |
             cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
+
+            export IMAGE_TAG=${{ github.sha }}
+
             echo "Pulling the latest images from Docker Hub....."
             docker compose pull
 
