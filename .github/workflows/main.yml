@@ -62,13 +62,14 @@ jobs:
           script: |
             cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
 
+            git pull origin main
             export IMAGE_TAG=${{ github.sha }}
 
             echo "Pulling the latest images from Docker Hub....."
             docker compose pull
 
             echo "Restarting containers..."
-            docker compose up -d
+            docker compose up -d --no-build
 
             echo "Cleaning unused images..."
             docker image prune -f
