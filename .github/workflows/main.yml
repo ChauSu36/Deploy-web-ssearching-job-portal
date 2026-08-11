@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  # ==========================================
+  # =========================================
   # STAGE 1: CI - BUILD & PUSH DOCKER IMAGES
   # =========================================
   Build-and-Push:
@@ -43,9 +43,9 @@ jobs:
           push: ${{ github.event_name == 'push' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:${{github.sha}}
 
-  # ==========================================
+  # ========================================
   # STAGE 2: CD - DEPLOY TO SERVER
-  # ==========================================
+  # ========================================
   Deploy-on-server:
     runs-on: ubuntu-latest
     needs: Build-and-Push # Only deploy when stage 1 is successfull
@@ -58,7 +58,7 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 24700
+          port: 22
           script: |
             cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
 
