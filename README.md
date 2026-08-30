@@ -1,1 +1,1 @@
-Demo: https://web.chausu.name.vn:8443/
+Demo: https://web.chausu.name.vn
