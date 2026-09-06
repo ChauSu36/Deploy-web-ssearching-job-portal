@@ -2,9 +2,9 @@ name: Deploy web app
 
 on:
   push:
-    branches: 
+    branches:
       - main
-  pull_request: 
+  pull_request:
     branches:
       - main
 
@@ -24,7 +24,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
+
       # 1/ Backend Image
       - name: Build And Push Backend Image (Java Spring Boot)
         uses: docker/build-push-action@v5
@@ -32,7 +32,7 @@ jobs:
           context: ./jobportal
           file: ./jobportal/Dockerfile
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:${{github.sha}}
+          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:${{ github.sha }}
 
       # 2/ Frontend Image
       - name: Build And Push Frontend Image (Reactjs)
@@ -41,15 +41,15 @@ jobs:
           context: ./react-social
           file: ./react-social/Dockerfile
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:${{github.sha}}
+          tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:${{ github.sha }}
 
   # ========================================
   # STAGE 2: CD - DEPLOY TO SERVER
   # ========================================
   Deploy-on-server:
     runs-on: ubuntu-latest
-    needs: Build-and-Push # Only deploy when stage 1 is successfull
-    if: github.event_name == 'push' # Only deploy when code is merged or in the main branch
+    needs: Build-and-Push
+    if: github.event_name == 'push'
 
     steps:
       - name: SSH and run deploy script
@@ -67,11 +67,11 @@ jobs:
 
             echo "Pulling the latest images from Docker Hub....."
             docker compose pull
-
+           
             echo "Restarting containers..."
             docker compose up -d --no-build
-	    
-	    echo "Reloading Nginx configuration..."
+
+            echo "Reloading Nginx configuration..."
             docker compose exec -T nginx nginx -s reload || docker compose restart nginx
 
             echo "Cleaning unused images..."
@@ -81,6 +81,4 @@ jobs:
             docker compose ps
 
             echo "Deployment completed."
-            
-      
       
