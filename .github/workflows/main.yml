@@ -43,9 +43,37 @@ jobs:
           push: ${{ github.event_name == 'push' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:${{ github.sha }}
 
-  # ========================================
-  # STAGE 2: CD - DEPLOY TO SERVER
-  # ========================================
+ # ========================================================
+  # STAGE 2A: CD CHO KUBERNETES & GITOPS (ARGOCD TỰ SYNC)
+  # ========================================================
+  Update-K8s-Manifest:
+    runs-on: ubuntu-latest
+    needs: Build-and-Push
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout and Update Manifest in Repo 2
+        run: |
+          # 1. Cấu hình danh tính Git Bot
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 2. Clone Repo 2 (k8s manifest) bằng PAT Token đã cấp quyền repo
+          git clone https://x-access-token:${{ secrets.AUTO_DEPLOY_TOKEN }}@github.com/ChauSu36/k8s-searching-job-portal.git manifest-repo
+          cd manifest-repo
+
+          # 3. Dùng lệnh sed tự động thay đổi Image Tag cho Frontend & Backend
+          sed -i 's|image: .*/jobportal-frontend:.*|image: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:'${{ github.sha }}'|g' Frontend/deployment.yaml
+          sed -i 's|image: .*/jobportal-backend:.*|image: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:'${{ github.sha }}'|g' Backend/deployment.yaml
+
+          # 4. Commit và Push ngược lại lên nhánh main của Repo 2
+          git add Frontend/deployment.yaml Backend/deployment.yaml
+          git commit -m "ci: auto-update image tag to ${{ github.sha }} [skip ci]" || echo "No changes to commit"
+          git push origin main
+
+  # ========================================================
+  # STAGE 2B: CD CHO SERVER DOCKER CŨ (NẾU VẪN MUỐN DUY TRÌ)
+  # ========================================================
   Deploy-on-server:
     runs-on: ubuntu-latest
     needs: Build-and-Push
@@ -67,7 +95,7 @@ jobs:
 
             echo "Pulling the latest images from Docker Hub....."
             docker compose pull
-           
+            
             echo "Restarting containers..."
             docker compose up -d --no-build
 

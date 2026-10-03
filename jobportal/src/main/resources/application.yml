@@ -66,5 +66,6 @@ app:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
       - https://web.chausu.name.vn/oauth2/redirect
+      - https://k8s-onpremise.chausu.name.vn/oauth2/redirect
       - myandroidapp://oauth2/redirect
       - myiosapp://oauth2/redirect
