@@ -74,39 +74,39 @@ jobs:
   # ========================================================
   # STAGE 2B: CD CHO SERVER DOCKER CŨ (NẾU VẪN MUỐN DUY TRÌ)
   # ========================================================
-  Deploy-on-server:
-    runs-on: ubuntu-latest
-    needs: Build-and-Push
-    if: github.event_name == 'push'
+  #Deploy-on-server:
+   # runs-on: ubuntu-latest
+  #  needs: Build-and-Push
+   # if: github.event_name == 'push'
 
-    steps:
-      - name: SSH and run deploy script
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
+  #  steps:
+   #   - name: SSH and run deploy script
+   #     uses: appleboy/ssh-action@v1.2.0
+   #     with:
+    #      host: ${{ secrets.VM_HOST }}
+  #        username: ${{ secrets.VM_USER }}
+     #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+    #      port: 22
+    #      script: |
+     #       cd /root/chausu-compose-web/Deploy-web-ssearching-job-portal
 
-            git pull origin main
-            export IMAGE_TAG=${{ github.sha }}
+    #        git pull origin main
+    #        export IMAGE_TAG=${{ github.sha }}
 
-            echo "Pulling the latest images from Docker Hub....."
-            docker compose pull
+     #       echo "Pulling the latest images from Docker Hub....."
+     #       docker compose pull
             
-            echo "Restarting containers..."
-            docker compose up -d --no-build
+     #       echo "Restarting containers..."
+     #       docker compose up -d --no-build
 
-            echo "Reloading Nginx configuration..."
-            docker compose exec -T nginx nginx -s reload || docker compose restart nginx
+      #      echo "Reloading Nginx configuration..."
+          #  docker compose exec -T nginx nginx -s reload || docker compose restart nginx
 
-            echo "Cleaning unused images..."
-            docker image prune -f
+         #   echo "Cleaning unused images..."
+        #    docker image prune -f
 
-            echo "Check containers..."
-            docker compose ps
+         #   echo "Check containers..."
+         #   docker compose ps
 
-            echo "Deployment completed."
+       #     echo "Deployment completed."
       
