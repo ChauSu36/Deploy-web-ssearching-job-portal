@@ -120,7 +120,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/admin/advertisement/**" ,
                         "/view-file/**",
                         "/document/**",
-                        "/image/**"
+                        "/image/**",
+                        "/api/test/**"
                 )
                 .permitAll()
                 .anyRequest()
