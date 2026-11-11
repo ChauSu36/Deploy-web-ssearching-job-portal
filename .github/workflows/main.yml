@@ -3,11 +3,6 @@ name: Build and Push Container Images to Docker Hub
 on:
   push:
     branches: [ "main" ]
-    # Chỉ trigger khi có commit thay đổi code trong jobportal hoặc react-social
-    paths:
-      - 'jobportal/**'
-      - 'react-social/**'
-  # Cho phép kích hoạt thủ công từ giao diện Actions khi cần test
   workflow_dispatch:
 
 jobs:
@@ -91,10 +86,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-# JOB 4: TỰ ĐỘNG CẬP NHẬT TAG VÀO REPO K8S MANIFEST
-update-manifests:
-    # Đảm bảo chỉ chạy job này NẾU các quá trình build/push bên trên chạy xong hoặc bị skip (nhưng không được failed)
-    # always() giúp job này vẫn chạy dù backend hoặc frontend không build (do không có file bị sửa theo path filter)
+  # JOB 4: TỰ ĐỘNG CẬP NHẬT TAG VÀO REPO K8S MANIFEST
+  update-manifests:
     if: always() && (needs.build-backend.result == 'success' || needs.build-frontend.result == 'success' || needs.build-backend.result == 'skipped' || needs.build-frontend.result == 'skipped')
     needs: [build-backend, build-frontend, changes]
     runs-on: ubuntu-latest
@@ -115,19 +108,19 @@ update-manifests:
         run: |
           cd manifest-repo
           # Dùng `sed` cập nhật trực tiếp tag mới nhất vào file deployment.yaml của thư mục Backend
-          sed -i 's|image: .*/jobportal-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-backend:${{ github.sha }}|g' 03-backend/deployment.yaml
+          sed -i 's|image: .*/jobportal-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-backend:${{ github.sha }}|g' Backend/deployment.yaml
 
       - name: Update Frontend Manifest (Nếu Frontend có thay đổi)
         if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
           cd manifest-repo
           # Dùng `sed` cập nhật trực tiếp tag mới nhất vào file deployment.yaml của thư mục Frontend
-          sed -i 's|image: .*/jobportal-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-frontend:${{ github.sha }}|g' 04-frontend/deployment.yaml
+          sed -i 's|image: .*/jobportal-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-frontend:${{ github.sha }}|g' Frontend/deployment.yaml
 
       - name: Commit and Push Changes back to K8s Repo
         run: |
           cd manifest-repo
           # Git add và commit. Dùng `|| echo` để pipeline không báo lỗi đỏ nếu không có file nào bị thay đổi
-          git add 03-backend/deployment.yaml 04-frontend/deployment.yaml
+          git add Backend/deployment.yaml Frontend/deployment.yaml
           git commit -m "ci: gitops sync - auto update images to ${{ github.sha }} [skip ci]" || echo "No manifest changes to commit"
           git push origin main
