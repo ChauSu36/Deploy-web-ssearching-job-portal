@@ -3,34 +3,10 @@ name: Build and Push Container Images to Docker Hub
 on:
   push:
     branches: [ "main" ]
-  # Cho phép kích hoạt thủ công từ giao diện Actions khi cần test
   workflow_dispatch:
 
 jobs:
-  # Job 1: Kiểm tra thư mục nào có thay đổi
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Check changed paths
-        uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            backend:
-              - 'jobportal/**'
-            frontend:
-              - 'react-social/**'
-
-  # Job 2: Build và Push Backend Image (Spring Boot)
-  build-backend:
-    needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' }}
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -39,7 +15,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Đã sửa thành DOCKER_USERNAME và DOCKER_PASSWORD
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -58,25 +33,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # Job 3: Build và Push Frontend Image (React)
-  build-frontend:
-    needs: changes
-    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # Đã sửa thành DOCKER_USERNAME và DOCKER_PASSWORD
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
@@ -89,12 +45,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # JOB 4: TỰ ĐỘNG CẬP NHẬT TAG VÀO REPO K8S MANIFEST
   update-manifests:
-    if: always() && (needs.build-backend.result == 'success' || needs.build-frontend.result == 'success' || needs.build-backend.result == 'skipped' || needs.build-frontend.result == 'skipped')
-    needs: [build-backend, build-frontend, changes]
+    needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
       - name: Setup Git Identity for GitHub Actions Bot
         run: |
@@ -103,20 +56,14 @@ jobs:
 
       - name: Clone K8s Manifest Repo
         run: |
-          # Dùng AUTO_DEPLOY_TOKEN để clone Repo 2
           git clone https://x-access-token:${{ secrets.AUTO_DEPLOY_TOKEN }}@github.com/ChauSu36/hybrid-cloud-k8s-manifests.git manifest-repo
 
-      - name: Update Backend Manifest (Nếu Backend có thay đổi)
-        if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' }}
+      - name: Update Manifests
         run: |
           cd manifest-repo
-          sed -i 's|image: .*/jobportal-backend:.*|image: ${{ secrets.DOCKER_USERNAME }}/jobportal-backend:${{ github.sha }}|g' openstack-onpremise/Backend/deployment.yaml
-
-      - name: Update Frontend Manifest (Nếu Frontend có thay đổi)
-        if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' }}
-        run: |
-          cd manifest-repo
-          sed -i 's|image: .*/jobportal-frontend:.*|image: ${{ secrets.DOCKER_USERNAME }}/jobportal-frontend:${{ github.sha }}|g' openstack-onpremise/Frontend/deployment.yaml
+          # Cố định tiền tố chausu/ để ngăn lỗi rỗng biến làm hỏng ArgoCD
+          sed -i 's|image: .*/jobportal-backend:.*|image: chausu/jobportal-backend:${{ github.sha }}|g' openstack-onpremise/Backend/deployment.yaml
+          sed -i 's|image: .*/jobportal-frontend:.*|image: chausu/jobportal-frontend:${{ github.sha }}|g' openstack-onpremise/Frontend/deployment.yaml
 
       - name: Commit and Push Changes back to K8s Repo
         run: |
