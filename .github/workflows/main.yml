@@ -100,27 +100,26 @@ jobs:
 
       - name: Clone K8s Manifest Repo
         run: |
-          # Dùng Token PAT đã lưu (AUTO_DEPLOY_TOKEN) để clone Repo 2
-          git clone https://x-access-token:${{ secrets.AUTO_DEPLOY_TOKEN }}@github.com/ChauSu36/k8s-searching-job-portal.git manifest-repo
+          # Clone chính xác repo hybrid-cloud-k8s-manifests
+          git clone https://x-access-token:${{ secrets.AUTO_DEPLOY_TOKEN }}@github.com/ChauSu36/hybrid-cloud-k8s-manifests.git manifest-repo
 
       - name: Update Backend Manifest (Nếu Backend có thay đổi)
         if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
           cd manifest-repo
-          # Dùng `sed` cập nhật trực tiếp tag mới nhất vào file deployment.yaml của thư mục Backend
-          sed -i 's|image: .*/jobportal-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-backend:${{ github.sha }}|g' Backend/deployment.yaml
+          # Trỏ đúng vào thư mục openstack-onpremise/Backend/deployment.yaml
+          sed -i 's|image: .*/jobportal-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-backend:${{ github.sha }}|g' openstack-onpremise/Backend/deployment.yaml
 
       - name: Update Frontend Manifest (Nếu Frontend có thay đổi)
         if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' }}
         run: |
           cd manifest-repo
-          # Dùng `sed` cập nhật trực tiếp tag mới nhất vào file deployment.yaml của thư mục Frontend
-          sed -i 's|image: .*/jobportal-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-frontend:${{ github.sha }}|g' Frontend/deployment.yaml
+          # Trỏ đúng vào thư mục openstack-onpremise/Frontend/deployment.yaml
+          sed -i 's|image: .*/jobportal-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/jobportal-frontend:${{ github.sha }}|g' openstack-onpremise/Frontend/deployment.yaml
 
       - name: Commit and Push Changes back to K8s Repo
         run: |
           cd manifest-repo
-          # Git add và commit. Dùng `|| echo` để pipeline không báo lỗi đỏ nếu không có file nào bị thay đổi
-          git add Backend/deployment.yaml Frontend/deployment.yaml
+          git add openstack-onpremise/Backend/deployment.yaml openstack-onpremise/Frontend/deployment.yaml
           git commit -m "ci: gitops sync - auto update images to ${{ github.sha }} [skip ci]" || echo "No manifest changes to commit"
           git push origin main
