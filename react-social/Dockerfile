@@ -7,11 +7,18 @@ COPY . .
 RUN npm run build   
 
 ## Run stage
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:alpine
+
+# Tạm chuyển sang root trong lúc build để dọn dẹp và phân quyền file tĩnh
+USER root
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=build /app/build .
-# Copy file cấu hình chứa try_files đè lên file mặc định của Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+RUN chmod -R 755 /usr/share/nginx/html
+
+# Chuyển lại về user thường (UID 101 - nginx) trước khi chạy container
+USER 101
+
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
